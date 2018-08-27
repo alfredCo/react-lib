@@ -3,6 +3,19 @@ import logo from './logo.svg';
 import './App.css';
 //import axios from 'axios';
 
+class ListItem extends Component {
+  constructor(){
+    super();
+    this.del = this.del.bind(this);
+  }
+  render(){
+    return <li>{this.props.data.text}<span onClick={this.del}>xxx</span></li>
+  }
+  del(){
+    this.props.del(this.props.data.text);
+  }
+}
+
 class App extends Component {
   constructor(){
     super();
@@ -12,10 +25,12 @@ class App extends Component {
       newValue:"",
       todoLists:[{text:123,key:1},{text:456,key:2}]
     };
+    this.del = this.del.bind(this);
   }
   render() {
     let _list = this.state.todoLists.map((item)=>{
-      return <li key={item.key}>{item.text}</li>
+      return <ListItem key={item.key} del={this.del} data={item}/>
+      //return <li key={item.key}>{item.text}<span onClick={this.del}>xxx</span></li>
     })
 
     return (
@@ -33,12 +48,20 @@ class App extends Component {
   change(e){
     this.setState({newValue:e.target.value})
   };
+  del(val){
+    console.log(val);
+    let todoLists = this.state.todoLists.filter(item=>val!=item.text);
+    this.setState({todoLists});
+  }
   add(){
     let todoLists = this.state.todoLists;
     todoLists = todoLists.concat([{text:this.state.newValue,key:'22'}])
     //this.state.todoLists.push({text:this.state.newValue,key:'22'})
     this.setState({todoLists});
+    this.setState({newValue:''})
   }
 }
+
+
 
 export default App;
