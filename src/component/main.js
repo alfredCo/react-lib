@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import Header from './component/header'
-import SideMenu from './component/sidemenu'
-import Main from './component/main'
+import logo from './logo.svg';
 import './App.css';
 //import axios from 'axios';
 
@@ -64,18 +62,6 @@ class App extends Component {
     this.setState({newValue:''})
   }
 }
-class Bpp extends Component{
-  render(){
-    return (
-      <div>
-        <Header/>
-        <SideMenu/>
-        <Main/>
-      </div>
-    )
-  }
-}
-
 
 
 
