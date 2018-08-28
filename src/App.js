@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Header from './component/header'
 import SideMenu from './component/sidemenu'
-import Main from './component/main'
+//import Main from './component/main'
 import './App.css';
 //import axios from 'axios';
 
@@ -70,7 +70,6 @@ class Bpp extends Component{
       <div>
         <Header/>
         <SideMenu/>
-        <Main/>
       </div>
     )
   }
@@ -79,4 +78,4 @@ class Bpp extends Component{
 
 
 
-export default App;
+export default Bpp;

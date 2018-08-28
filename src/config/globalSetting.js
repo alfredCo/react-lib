@@ -1,6 +1,3 @@
-var globalSettingModule = angular.module("globalSettingModule", []);
-
-globalSettingModule.service("globalMenuModule", [function() {
     var GLOBALDATA = {
         ADMIN_MENU:[
             {
@@ -402,6 +399,4 @@ globalSettingModule.service("globalMenuModule", [function() {
         ],
         "4_PERMIT":["/"]
     };
-    return GLOBALDATA;
-}]);
-export default globalSettingModule.name;
+export default GLOBALDATA;

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom'
-import './App.css';
 //import axios from 'axios';
 
 
@@ -25,7 +24,7 @@ class Header extends Component {
             </div>
             <ul class="user-mes-box clearfix">
               <li class="admin-center-info">
-                <a><span >{userName}</span><i class="iconfont"></i></a>
+                <a><span >{this.state.userName}</span><i class="iconfont"></i></a>
                 <div class="dropdown-layer admin-center">
                   <ul class="admin-center-menu">
                     <li>
