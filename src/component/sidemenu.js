@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Link,NavLink} from "react-router-dom";
+import {Link,NavLink,Prompt} from "react-router-dom";
 import GLOBALDATA from '../config/globalSetting';
 
 
@@ -8,10 +8,15 @@ class SideMenu extends Component {
   constructor(){
     super();
     this.menuList = GLOBALDATA.ADMIN_MENU;
+    this._change = this._change.bind(this);
+    this.state = {
+      current:''
+    }
+    console.log(window.location.href)
   }
   render() {
     let _menu = this.menuList.map((item,index)=>{
-      return <Menu menu={item} keys={index} key={index}/>
+      return <Menu menu={item} key={index} cur={this.state.current}/>
     })
     return (
       <aside>
@@ -21,8 +26,29 @@ class SideMenu extends Component {
       <ul className="menu-level-1">
         {_menu}
       </ul>
+      <Prompt message={this._change}/>
     </aside>
     );
+  }
+  _change(location){
+    console.log(location);
+    for(let j=0;j<this.menuList.length;j++){
+      let flag = 0;
+      if(this.menuList[j].child.length>0){
+        for(let i=0;i<this.menuList[j].child.length;i++){
+          if(this.menuList[j].child[i].href===location.pathname){
+            this.setState({current:this.menuList[j].keywords});
+            flag++;
+            break;
+          }
+        }
+      }
+      if(flag>0){
+        break;
+      }
+    }
+    
+    return true
   }
   componentWillReceiveProps(nextProps){
     console.log(nextProps);
@@ -36,9 +62,11 @@ class Menu extends Component{
     this.item = this.props.menu;
     let keyword = props.menu.keywords
     this.state = {
-      keyword:false
+      keyword:false,
+      current:false
     }
     this._toggle = this._toggle.bind(this);
+    
   }
   _toggle(){
     let val = this.state.keyword;
@@ -46,16 +74,31 @@ class Menu extends Component{
       keyword:!val
     })
   }
-  componentDidMount() {
-    console.log(this.props.onRouteEnter(this.props.match));
+  componentWillUpdate() {
+    // for(let i=0;i<this.item.child.length;i++){
+    //   if(this.item.child[i].href===this.props.cur){
+    //     this.setState({current:true});
+    //     break;
+    //   }
+    // }
+    //console.log(this.props.onRouteEnter(this.props.match));
       //this.props.onRouteEnter(this.props.match); // 这里你可以根据需要传更多信息
   }
+  // _change(location){
+  //   console.log(location);
+  //   this.item.child.forEach(item=>{
+  //     if(item.href===location.path){
+  //       this.setState({current:true});
+  //     }
+  //   })
+  //   return true;
+  // }
   render(){
     return(
         this.item.child.length>0?
           (
-            <li className={"has-child "+(this.state.keyword?'level2-active':'')}>
-              <a onClick={this._toggle}>
+            <li className={"has-child "+(this.state.keyword?'level2-active ':'')+(this.props.cur==this.item.keywords?'active':'')}>
+              <a onClick={this._toggle} className={this.props.cur==this.item.keywords?'active':''}>
                 <span><i className={this.item.icon}></i><b>{this.item.text}</b></span>
                 <i className="icon-arrow"></i>
               </a>
