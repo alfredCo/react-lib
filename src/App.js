@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Header from './component/header'
 import SideMenu from './component/sidemenu'
-//import Main from './component/main'
+import Main from './component/route'
 import './App.css';
 //import axios from 'axios';
 
@@ -64,12 +64,18 @@ class App extends Component {
     this.setState({newValue:''})
   }
 }
+
 class Bpp extends Component{
   render(){
     return (
       <div>
         <Header/>
-        <SideMenu/>
+        
+        <div className="main">
+          <App/>
+          <SideMenu/>
+          <Main/>
+        </div>
       </div>
     )
   }
