@@ -1,0 +1,58 @@
+<div class="page-inner no-bg markdown-page">
+    <div class="bcn">
+        <a href="#/coursemanage/chapters">{{pathTitle}}</a> / <span>{{"cn.chapters.docedit"|translate}}</span>
+    </div>
+    <div class="edit-box">
+        <div class="table-action" ng-hide="type==1">
+            <button class="btn btn-primary" ng-disabled="!canSave" ng-click="saveForm()"><i class="icon-aw-zdi"></i> {{"cn.action.save"|translate}}</button>
+            <div class="upload-file upload-inline">
+                <span class="btn-file">
+                    <input type="file" ng-model="file" name="file" class="file" onchange="angular.element(this).scope().fileChanged(this)" />
+                    <button class="btn btn-info"><i class="icon-aw-dr"></i> {{"cn.action.import"|translate}}</button>
+                </span>
+            </div>
+            <p class="red" ng-if="imgChecked">{{"cn.errors.uploadmd"|translate}}</p>
+        </div>
+        <div ng-if="showMarkdown">
+            <markdown-editor key="chapter" current="currentEditor" data="docData" change="markdownChange(context)" edit="type"></markdown-editor>
+        </div>
+        <div class="red" ng-if="markdownChecked">
+          <span>{{"cn.chapters.checkInfo.markdown"|translate}}</span>
+        </div>
+    </div>
+</div>
+<script type="text/ng-template" id="importfile.html">
+        <div class="modal-common">
+        <div class="modal-header">
+            <button type="button" class="close" ng-click="$dismiss()">×</button>
+            <h3 class="modal-title  clearfix">{{'cn.chapters.model.uploadfile'|translate}}</h3>
+        </div>
+        <div class="modal-body">
+            <form name="uploadimgform" novalidate>
+                <div class="control-group">
+                    <label class="control-label">
+                      <span class="red">*</span>{{'cn.chapters.model.MDfile'|translate}}：
+                    </label>
+                    <div class="controls">
+                        <div class="upload-file">
+                            <div class="input-group">
+                              <input type="text" class="form-control" readonly ng-model="filePath" placeholder="{{'cn.chapters.placeholder.chooseFile'|translate}}">
+                              <span class="btn-file">
+                                <input type="file" ng-model="file" name="file" class="file" ng-change="change($event)" onchange="angular.element(this).scope().fileChanged(this)" />
+                                <button class="btn btn-primary">{{'cn.chapters.model.uploadfile'|translate}}</button>
+                              </span>
+                            </div>
+                        </div>
+                        <span class="error" ng-if="imgChecked&&FormValid">{{'cn.chapters.checkInfo.filetype'|translate}}</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-info" ng-disabled="!canClick" ng-click="upload(uploadimgform)">{{'cn.action.ok'|translate}}</button>
+            <button type="button" class="btn btn-default" ng-click="$dismiss()">{{'cn.action.cancel'|translate}}</button>
+        </div>
+    </div>
+</script>
+
+

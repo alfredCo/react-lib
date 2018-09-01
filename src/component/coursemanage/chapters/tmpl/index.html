@@ -1,0 +1,169 @@
+<div class="page-inner" >
+    <div class="table-action">
+        <button type="button" ng-click="createItem()" class="btn btn-primary">
+          <i class="icon-aw-add-to2"></i>{{"cn.chapters.btn.create"|translate}}
+        </button>
+        <button type="button" ng-disabled="!canEdit" ng-click="createItem('edit')" class="btn btn-info">
+            <i class="icon-aw-modify"></i>{{"cn.action.edit"|translate}}
+        </button>
+        <button type="button" ng-disabled="!canDel" ng-click="deleteItem(checkedItems)" class="btn btn-info">
+          <i class="icon-aw-delete"></i>{{"cn.action.del"|translate}}
+        </button>
+        <button type="button" ng-click="editDoc(checkedItems)" ng-disabled="!canRead" class="btn btn-info"><i class="icon-aw-dclgd"></i>{{"cn.chapters.btn.editDoc"|translate}}</button>
+        <div class="pull-right">
+            <div class="status-list train-status-list">
+                <ui-select ng-model="curriculum.selected" ng-change="changeCurriculum(curriculum.selected)">
+                    <ui-select-match placeholder='{{"cn.chapters.placeholder.course"|translate}}' title="{{$select.selected.courseName}}">
+                        {{$select.selected.courseName}}
+                    </ui-select-match>
+                    <ui-select-choices repeat="status in curriculumList">
+                        <div ng-bind-html="status.courseName | highlight: $select.search" title="{{status.courseName}}"></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+          <div class="search-box">
+            <form name="searchForm" novalidate ng-keyup="applyGlobalSearch()">
+              <button class="btn" type="submit" ng-disabled="searchForm.$invalid">
+                <i class="icon-aw-search"></i>
+              </button>
+                <input type="text" class="form-control" autocomplete="off" maxlength="128" name="searchTerm" ng-model="globalSearchTerm"/>
+            </form>
+          </div>
+          <button class="btn btn-renovat btn-search" ng-click="refresh()">
+            <i class="icon-aw-refresh"></i>
+          </button>
+        </div>
+      </div>
+      <div class="table-content">
+        <table ng-table="tableParams" class="table" template-pagination="/public/tmpl/ngtablepagination.html">
+          <colgroup>
+            <col width="4%">
+            <col width="18%">
+            <col width="24%">
+            <col width="18%">
+            <col width="18%">
+            <col width="18%">
+          </colgroup>
+          <tr ng-repeat="item in $data">
+            <td header="'headerCheckbox.html'">
+              <label class="checkbox">
+                <input type="checkbox" ng-model="checkboxes.items[item.id]" />
+                <i class="iconfont"></i>
+              </label>
+            </td>
+            <td data-title="dataTitles.courseName" sortable="'courseName'">{{item.courseName}}</td>
+            <td data-title="dataTitles.name" sortable="'chapterName'">{{item.chapterName}}</td>
+            <td data-title="dataTitles.sort" sortable="'chapterOrder'">{{item.chapterOrder}}</td>
+            <td data-title="dataTitles.libImg" sortable="'experimentMirror'">{{item.experimentMirror}}</td>
+            <td data-title="dataTitles.createTime" sortable="'createTime'"><span class="word-break">{{item.createTime}}</span></td>
+          </tr>
+          <tr ng-if="$data.length==0">
+              <td colspan="6">
+                  <loading-data data="$data"></loading-data>
+              </td>
+          </tr>
+        </table>
+      </div>
+</div>
+<script type="text/ng-template" id="headerCheckbox.html">
+    <label class="checkbox">
+        <input type="checkbox" ng-model="checkboxes.checked" class="select-all" value="" />
+        <i class="iconfont"></i>
+    </label>
+</script>
+<script type="text/ng-template" id="chaptersCreate.html">
+    <div class="modal-common">
+        <div class="modal-header">
+            <button type="button" class="close" ng-click="$dismiss()">×</button>
+            <h3 class="modal-title  clearfix">{{TITLE}}</h3>
+        </div>
+        <div class="modal-body">
+            <form name="createForm" novalidate>
+                <div class="control-group">
+                    <label class="control-label">
+                      <span class="red">*</span>{{'cn.chapters.dataTitles.courseName'|translate}}：
+                    </label>
+                    <div class="controls">
+                        <ui-select ng-model="create.courseSelected" ng-disabled="isEdit" name="coursename" ng-change="changeCourse(create.courseSelected)" required>
+                            <ui-select-match placeholder='{{"cn.chapters.placeholder.course"|translate}}' title="{{$select.selected.courseName}}">{{$select.selected.courseName}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="item in create.allCourse">
+                                <div ng-bind-html="item.courseName | highlight: $select.search" title="{{item.courseName}}"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                        <div class="error" ng-messages="(FormValid ||createForm.coursename.$dirty) && createForm.coursename.$error">
+                            <span class="error" ng-message="required">{{'cn.errors.required'|translate}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">
+                      <span class="red">*</span>{{'cn.chapters.model.sort'|translate}}：
+                    </label>
+                    <div class="controls">
+                        <input class="form-controls" name="chapterOrder"  ng-change="changeName('Order',create.chapterOrder)" ng-model="create.chapterOrder" ng-disabled="isEdit" ng-pattern="/(^[1-9][0-9]$)|(^[1-9]$)|(^100$)/" placeholder="{{'cn.chapters.placeholder.sort'|translate}}"
+                             required/>
+                        <div class="error" ng-messages="(FormValid ||createForm.chapterOrder.$dirty) && createForm.chapterOrder.$error">
+                            <span class="error" ng-message="pattern">{{'cn.errors.limit_1_100'|translate}}</span>
+                            <span class="error" ng-message="required">{{'cn.errors.required'|translate}}</span>
+                        </div>
+                        <div class="error" ng-if="hadSameOrder">
+                            <span class="error">{{'cn.chapters.checkInfo.sameOrder'|translate}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">
+                      <span class="red">*</span>{{'cn.chapters.dataTitles.name'|translate}}：
+                    </label>
+                    <div class="controls">
+                        <input class="form-controls" name="name" ng-disabled="isDefault" ng-change="changeName('Name',create.name)" ng-model="create.name" namereg placeholder="{{'cn.chapters.placeholder.name'|translate}}"
+                            ng-maxlength="50" required/>
+                        <div class="error" ng-messages="(FormValid ||createForm.name.$dirty) && createForm.name.$error">
+                            <form-validate maxlength="50"></form-validate>
+                        </div>
+                        <div class="error" ng-if="hadSameName">
+                            <span class="error">{{'cn.chapters.checkInfo.sameName'|translate}}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">
+                      {{'cn.chapters.model.libImg'|translate}}：
+                    </label>
+                    <div class="controls">
+                        <ui-select ng-model="create.libImgSelected" name="libimg" >
+                            <ui-select-match placeholder='{{"cn.chapters.placeholder.libImg"|translate}}' title="{{$select.selected.configname}}">{{$select.selected.configname}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="item in create.allExperimentMirror">
+                                <div ng-bind-html="item.configname | highlight: $select.search" title="{{item.configname}}"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                        <div class="error" ng-messages="(FormValid ||createForm.libimg.$dirty) && createForm.libimg.$error">
+                            <span class="error" ng-message="required">{{'cn.errors.required'|translate}}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- <div class="control-group">
+                    <label class="control-label">
+                      {{'cn.chapters.dataTitles.decr'|translate}}：
+                    </label>
+                    <div class="controls">
+                        <textarea class="form-controls" ng-model="create.decr" name="decr" placeholder="{{'cn.chapters.placeholder.decr'|translate}}" ng-maxlength="80">
+                        </textarea>
+                        <div class="error" ng-messages="(FormValid ||createForm.decr.$dirty) && createForm.decr.$error">
+                            <span class="error" ng-message="maxlength">{{'cn.errors.description'|translate}}</span>
+                        </div>
+                    </div>
+                </div> -->
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-info" ng-disabled="!canClick" ng-click="confirmCreate(createForm)">{{'cn.action.ok'|translate}}</button>
+            <button type="button" class="btn btn-default" ng-click="$dismiss()">{{'cn.action.cancel'|translate}}</button>
+        </div>
+    </div>
+</script>
+

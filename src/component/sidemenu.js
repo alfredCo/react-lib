@@ -97,8 +97,8 @@ class Menu extends Component{
     return(
         this.item.child.length>0?
           (
-            <li className={"has-child "+(this.state.keyword?'level2-active ':'')+(this.props.cur==this.item.keywords?'active':'')}>
-              <a onClick={this._toggle} className={this.props.cur==this.item.keywords?'active':''}>
+            <li className={"has-child "+(this.state.keyword?'level2-active ':'')+(this.props.cur===this.item.keywords?'active':'')}>
+              <a onClick={this._toggle} className={this.props.cur===this.item.keywords?'active':''}>
                 <span><i className={this.item.icon}></i><b>{this.item.text}</b></span>
                 <i className="icon-arrow"></i>
               </a>

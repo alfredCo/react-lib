@@ -1,0 +1,109 @@
+<div class="page-inner" >
+    <div class="table-action">
+        <button type="button" ng-click="createItem()" class="btn btn-primary">
+          <i class="icon-aw-add-to2"></i>{{"cn.discipline.btn.create"|translate}}
+        </button>
+        <button type="button" ng-disabled="!canEdit" ng-click="createItem('edit')" class="btn btn-info">
+            <i class="icon-aw-modify"></i>{{"cn.action.edit"|translate}}
+        </button>
+        <button type="button" ng-disabled="!canDel" ng-click="deleteItem(checkedItems)" class="btn btn-info">
+          <i class="icon-aw-delete"></i>{{"cn.action.del"|translate}}
+        </button>
+        <div class="pull-right">
+          <div class="search-box">
+            <form name="searchForm" novalidate ng-keyup="applyGlobalSearch()">
+              <button class="btn" type="submit" ng-disabled="searchForm.$invalid">
+                <i class="icon-aw-search"></i>
+              </button>
+                <input type="text" class="form-control" autocomplete="off" maxlength="128" name="searchTerm" ng-model="globalSearchTerm"/>
+            </form>
+          </div>
+          <button class="btn btn-renovat btn-search" ng-click="refresh()">
+            <i class="icon-aw-refresh"></i>
+          </button>
+        </div>
+      </div>
+      <div class="table-content">
+        <table ng-table="tableParams" class="table" template-pagination="/public/tmpl/ngtablepagination.html">
+          <colgroup>
+            <col width="4%">
+            <col width="24%">
+            <col width="24%">
+            <col width="24%">
+            <col width="24%">
+          </colgroup>
+          <tr ng-repeat="item in $data">
+            <td header="'headerCheckbox.html'">
+              <label class="checkbox">
+                <input type="checkbox" ng-model="checkboxes.items[item.id]" />
+                <i class="iconfont"></i>
+              </label>
+            </td>
+            <td data-title="dataTitles.name" sortable="'courseName'">{{item.courseName}}</td>
+            <td data-title="dataTitles.tag" sortable="'tags'"><span ng-repeat="it in item.tags">{{it}}<span ng-if="!$last" class="ng-scope"> / </span></span></td>
+            <td data-title="dataTitles.createTime" sortable="'createTime'"><span class="word-break">{{item.createTime}}</span></td>
+            <td data-title="dataTitles.editTime" sortable="'updateTime'"><span class="word-break">{{item.updateTime}}</span></td>
+          </tr>
+          <tr ng-if="$data.length==0">
+              <td colspan="6">
+                  <loading-data data="$data"></loading-data>
+              </td>
+          </tr>
+        </table>
+      </div>
+</div>
+<script type="text/ng-template" id="headerCheckbox.html">
+    <label class="checkbox">
+        <input type="checkbox" ng-model="checkboxes.checked" class="select-all" value="" />
+        <i class="iconfont"></i>
+    </label>
+</script>
+<script type="text/ng-template" id="disciplineCreate.html">
+    <div class="modal-common">
+        <div class="modal-header">
+            <button type="button" class="close" ng-click="$dismiss()">×</button>
+            <h3 class="modal-title  clearfix">{{TITLE}}</h3>
+        </div>
+        <div class="modal-body">
+            <form name="createForm" novalidate>
+                <div class="control-group">
+                    <label class="control-label">
+                      <span class="red">*</span>{{'cn.discipline.dataTitles.name'|translate}}：
+                    </label>
+                    <div class="controls">
+                        <input class="form-controls" name="name" ng-change="changeName()" ng-model="create.name" namereg placeholder="{{'cn.discipline.placeholder.name'|translate}}"
+                            ng-maxlength="50" required/>
+                        <div class="error" ng-messages="(FormValid ||createForm.name.$dirty) && createForm.name.$error">
+                            <form-validate maxlength="50"></form-validate>
+                        </div>
+                        <div class="error" ng-if="hadSameName">
+                            <span class="error">{{'cn.discipline.checkInfo.sameName'|translate}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">
+                      <!-- <span class="red">*</span> -->{{'cn.discipline.model.tag'|translate}}：
+                    </label>
+                    <div class="controls">
+                        <ui-select multiple close-on-select="false" ng-model="create.inUseTags" name="multiple" ng-change="choiceUser(allowProUser.NameList)">
+                            <ui-select-match placeholder='{{"cn.discipline.placeholder.tag"|translate}}' title="{{$item.name}}">{{$item.name}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="item in create.allTags">
+                                <div ng-bind-html="item.name | highlight: $select.search" title="{{item.name}}"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                        <div class="error" ng-messages="(FormValid ||createForm.multiple.$dirty) && createForm.multiple.$error">
+                            <span class="error" ng-message="required">{{'cn.errors.required'|translate}}</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-info" ng-disabled="!canClick" ng-click="confirmCreate(createForm)">{{'cn.action.ok'|translate}}</button>
+            <button type="button" class="btn btn-default" ng-click="$dismiss()">{{'cn.action.cancel'|translate}}</button>
+        </div>
+    </div>
+</script>
+

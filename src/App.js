@@ -3,6 +3,7 @@ import Header from './component/header'
 import SideMenu from './component/sidemenu'
 import Main from './component/route'
 import './App.css';
+import 'antd/dist/antd.css';
 //import axios from 'axios';
 
 class ListItem extends Component {
@@ -53,7 +54,7 @@ class App extends Component {
   };
   del(val){
     console.log(val);
-    let todoLists = this.state.todoLists.filter(item=>val!=item.text);
+    let todoLists = this.state.todoLists.filter(item=>val!==item.text);
     this.setState({todoLists});
   }
   add(){
@@ -70,9 +71,7 @@ class Bpp extends Component{
     return (
       <div>
         <Header/>
-        
         <div className="main">
-          <App/>
           <SideMenu/>
           <Main/>
         </div>

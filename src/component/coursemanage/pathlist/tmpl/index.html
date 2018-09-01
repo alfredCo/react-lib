@@ -1,0 +1,115 @@
+<div class="page-inner" >
+    <div class="table-action">
+        <button type="button" ng-click="createItem()" class="btn btn-primary">
+          <i class="icon-aw-add-to2"></i>{{"cn.pathlist.btn.create"|translate}}
+        </button>
+        <button type="button" ng-disabled="!canEdit" ng-click="createItem('edit')" class="btn btn-info">
+            <i class="icon-aw-modify"></i>{{"cn.action.edit"|translate}}
+        </button>
+        <button type="button" ng-disabled="!canDel" ng-click="deleteItem(checkedItems)" class="btn btn-info">
+          <i class="icon-aw-delete"></i>{{"cn.action.del"|translate}}
+        </button>
+        <div class="dropdown">
+            <button type="button" class="btn btn-info dropdown-toggle" ng-disabled="!canMoreOpt" data-toggle="dropdown">{{"cn.action.moreAction"|translate}}
+                <i class="icon-aw-angle-down-1"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <button ng-click="uploadImage('paththumb')" ng-disabled="!canUploadImg">{{"cn.action.uploadthumb"|translate}}</button>
+                </li>
+                <li>
+                    <button ng-click="uploadImage('pathbg')" ng-disabled="!canUploadImg">{{"cn.action.uploadbg"|translate}}</button>
+                </li>
+            </ul>
+        </div>
+        <div class="pull-right">
+          <div class="search-box">
+            <form name="searchForm" novalidate ng-keyup="applyGlobalSearch()">
+              <button class="btn" type="submit" ng-disabled="searchForm.$invalid">
+                <i class="icon-aw-search"></i>
+              </button>
+                <input type="text" class="form-control" autocomplete="off" maxlength="128" name="searchTerm" ng-model="globalSearchTerm"/>
+            </form>
+          </div>
+          <button class="btn btn-renovat btn-search" ng-click="refresh()">
+            <i class="icon-aw-refresh"></i>
+          </button>
+        </div>
+      </div>
+      <div class="table-content">
+        <table ng-table="tableParams" class="table" template-pagination="/public/tmpl/ngtablepagination.html">
+          <colgroup>
+            <col width="4%">
+            <col width="32%">
+            <col width="32%">
+            <col width="32%">
+          </colgroup>
+          <tr ng-repeat="item in $data">
+            <td header="'headerCheckbox.html'">
+              <label class="checkbox">
+                <input type="checkbox" ng-model="checkboxes.items[item.id]" />
+                <i class="iconfont"></i>
+              </label>
+            </td>
+            <td data-title="dataTitles.name" sortable="'pathName'">{{item.pathName}}</td>
+            <td data-title="dataTitles.decr" sortable="'routeDescription'"><span class="word-break">{{item.routeDescription}}</span></td>
+            <td data-title="dataTitles.createTime" sortable="'createTime'"><span class="word-break">{{item.createTime}}</span></td>
+          </tr>
+          <tr ng-if="$data.length==0">
+              <td colspan="4">
+                  <loading-data data="$data"></loading-data>
+              </td>
+          </tr>
+        </table>
+      </div>
+</div>
+<script type="text/ng-template" id="headerCheckbox.html">
+    <label class="checkbox">
+        <input type="checkbox" ng-model="checkboxes.checked" class="select-all" value="" />
+        <i class="iconfont"></i>
+    </label>
+</script>
+<script type="text/ng-template" id="pathlistCreate.html">
+    <div class="modal-common">
+        <div class="modal-header">
+            <button type="button" class="close" ng-click="$dismiss()">×</button>
+            <h3 class="modal-title  clearfix">{{TITLE}}</h3>
+        </div>
+        <div class="modal-body">
+            <form name="createForm" novalidate>
+                <div class="control-group">
+                    <label class="control-label">
+                      <span class="red">*</span>{{'cn.pathlist.dataTitles.name'|translate}}：
+                    </label>
+                    <div class="controls">
+                        <input class="form-controls" name="name" ng-change="changeName()" ng-model="create.pathName" namereg placeholder="{{'cn.pathlist.placeholder.name'|translate}}"
+                            ng-maxlength="50" required/>
+                        <div class="error" ng-messages="(FormValid ||createForm.name.$dirty) && createForm.name.$error">
+                            <form-validate maxlength="50"></form-validate>
+                        </div>
+                        <div class="error" ng-if="hadSameName">
+                            <span class="error">{{'cn.pathlist.checkInfo.sameName'|translate}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">
+                      {{'cn.pathlist.dataTitles.decr'|translate}}：
+                    </label>
+                    <div class="controls">
+                        <textarea class="form-controls" ng-model="create.routeDescription" name="decr" placeholder="{{'cn.pathlist.placeholder.name'|translate}}" ng-maxlength="200">
+                        </textarea>
+                        <div class="error" ng-messages="(FormValid ||createForm.decr.$dirty) && createForm.decr.$error">
+                            <form-validate maxlength="200"></form-validate>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-info" ng-disabled="!canClick" ng-click="confirmCreate(createForm)">{{'cn.action.ok'|translate}}</button>
+            <button type="button" class="btn btn-default" ng-click="$dismiss()">{{'cn.action.cancel'|translate}}</button>
+        </div>
+    </div>
+</script>
+
